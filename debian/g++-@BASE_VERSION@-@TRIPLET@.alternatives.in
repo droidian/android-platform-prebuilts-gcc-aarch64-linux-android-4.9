@@ -1,0 +1,4 @@
+Name: @TRIPLET@-g++
+Link: /usr/bin/@TRIPLET@-g++
+Alternative: /usr/bin/@TRIPLET@-g++-@BASE_VERSION@
+Priority: 50

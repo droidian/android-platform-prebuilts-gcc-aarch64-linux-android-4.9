@@ -1,0 +1,107 @@
+#!/usr/bin/make -f
+
+BASE_VERSION := 4.9
+BASE_VERSION_PREBUILT := $(BASE_VERSION).x
+TRIPLET := aarch64-linux-android
+
+%:
+	dh $@
+
+debian/control: debian/control.in
+	sed -e "s|@BASE_VERSION@|$(BASE_VERSION)|g" \
+		-e "s|@TRIPLET@|$(TRIPLET)|g" \
+		debian/control.in > debian/control
+
+override_dh_auto_install:
+	# gcc
+	mkdir -p $(CURDIR)/debian/gcc-$(BASE_VERSION)-$(TRIPLET)/usr/bin
+
+	for executable in \
+		gcc-ar \
+		gcc-nm \
+		gcc-ranlib \
+		gcov \
+		gcov-tool \
+	; do \
+		cp $(CURDIR)/bin/$(TRIPLET)-$${executable} $(CURDIR)/debian/gcc-$(BASE_VERSION)-$(TRIPLET)/usr/bin/$(TRIPLET)-$${executable}-$(BASE_VERSION); \
+	done
+
+	cp $(CURDIR)/bin/$(TRIPLET)-gcc-$(BASE_VERSION_PREBUILT) $(CURDIR)/debian/gcc-$(BASE_VERSION)-$(TRIPLET)/usr/bin/$(TRIPLET)-gcc-$(BASE_VERSION)
+
+	mkdir -p $(CURDIR)/debian/gcc-$(BASE_VERSION)-$(TRIPLET)/usr/libexec/gcc/$(TRIPLET)/$(BASE_VERSION_PREBUILT)
+
+	for lib in \
+		collect2 \
+		liblto_plugin.so \
+		liblto_plugin.so.0 \
+		liblto_plugin.so.0.0.0 \
+		libfunction_reordering_plugin.so.0 \
+		libfunction_reordering_plugin.so.0.0.0 \
+		lto1 \
+		lto-wrapper \
+		plugin \
+	; do \
+		cp -R $(CURDIR)/libexec/gcc/$(TRIPLET)/$(BASE_VERSION_PREBUILT)/$${lib} $(CURDIR)/debian/gcc-$(BASE_VERSION)-$(TRIPLET)/usr/libexec/gcc/$(TRIPLET)/$(BASE_VERSION_PREBUILT)/$${lib}; \
+	done
+
+	# libgcc-dev
+	mkdir -p $(CURDIR)/debian/libgcc-$(BASE_VERSION)-dev-$(TRIPLET)-cross/usr/lib/gcc/$(TRIPLET)/$(BASE_VERSION_PREBUILT)
+
+	cp -R $(CURDIR)/lib/gcc/$(TRIPLET)/$(BASE_VERSION_PREBUILT)/* $(CURDIR)/debian/libgcc-$(BASE_VERSION)-dev-$(TRIPLET)-cross/usr/lib/gcc/$(TRIPLET)/$(BASE_VERSION_PREBUILT)
+
+	# g++
+	mkdir -p $(CURDIR)/debian/g++-$(BASE_VERSION)-$(TRIPLET)/usr/bin
+	mkdir -p $(CURDIR)/debian/g++-$(BASE_VERSION)-$(TRIPLET)/usr/libexec/gcc/$(TRIPLET)/$(BASE_VERSION_PREBUILT)
+
+	cp $(CURDIR)/bin/real-$(TRIPLET)-g++ $(CURDIR)/debian/g++-$(BASE_VERSION)-$(TRIPLET)/usr/bin/$(TRIPLET)-g++-$(BASE_VERSION)
+	cp $(CURDIR)/libexec/gcc/$(TRIPLET)/$(BASE_VERSION_PREBUILT)/cc1plus $(CURDIR)/debian/g++-$(BASE_VERSION)-$(TRIPLET)/usr/libexec/gcc/$(TRIPLET)/$(BASE_VERSION_PREBUILT)/cc1plus
+
+	# cpp
+	mkdir -p $(CURDIR)/debian/cpp-$(BASE_VERSION)-$(TRIPLET)/usr/bin
+	mkdir -p $(CURDIR)/debian/cpp-$(BASE_VERSION)-$(TRIPLET)/usr/libexec/gcc/$(TRIPLET)/$(BASE_VERSION_PREBUILT)
+
+	cp $(CURDIR)/bin/$(TRIPLET)-cpp $(CURDIR)/debian/cpp-$(BASE_VERSION)-$(TRIPLET)/usr/bin/$(TRIPLET)-cpp-$(BASE_VERSION)
+	cp $(CURDIR)/libexec/gcc/$(TRIPLET)/$(BASE_VERSION_PREBUILT)/cc1 $(CURDIR)/debian/cpp-$(BASE_VERSION)-$(TRIPLET)/usr/libexec/gcc/$(TRIPLET)/$(BASE_VERSION_PREBUILT)/cc1
+
+	# binutils
+	mkdir -p $(CURDIR)/debian/binutils-gcc$(BASE_VERSION)-$(TRIPLET)/usr/bin
+	mkdir -p $(CURDIR)/debian/binutils-gcc$(BASE_VERSION)-$(TRIPLET)/usr/$(TRIPLET)/bin
+	mkdir -p $(CURDIR)/debian/binutils-gcc$(BASE_VERSION)-$(TRIPLET)/usr/lib/$(TRIPLET)/ldscripts
+
+	for executable in \
+		addr2line \
+		dwp \
+		elfedit \
+		size \
+		strings \
+		nm \
+		readelf \
+		ld \
+		ld.bfd \
+		ld.gold \
+		objdump \
+		objcopy \
+		ranlib \
+		ar \
+		strip \
+		as \
+	; do \
+		cp $(CURDIR)/bin/$(TRIPLET)-$${executable} $(CURDIR)/debian/binutils-gcc$(BASE_VERSION)-$(TRIPLET)/usr/bin/$(TRIPLET)-$${executable}; \
+	done
+
+	cp $(CURDIR)/$(TRIPLET)/bin/* $(CURDIR)/debian/binutils-gcc$(BASE_VERSION)-$(TRIPLET)/usr/$(TRIPLET)/bin/
+	cp $(CURDIR)/$(TRIPLET)/lib/ldscripts/* $(CURDIR)/debian/binutils-gcc$(BASE_VERSION)-$(TRIPLET)/usr/lib/$(TRIPLET)/ldscripts/
+
+override_dh_installalternatives:
+	for alt in gcc g++ cpp; do \
+		sed -e "s|@BASE_VERSION@|$(BASE_VERSION)|g" \
+			-e "s|@TRIPLET@|$(TRIPLET)|g" \
+			debian/$${alt}-@BASE_VERSION@-@TRIPLET@.alternatives.in > debian/$${alt}-$(BASE_VERSION)-$(TRIPLET).alternatives; \
+	done
+
+	dh_installalternatives
+
+override_dh_auto_clean:
+	rm -f debian/*.alternatives
+
+	dh_auto_clean

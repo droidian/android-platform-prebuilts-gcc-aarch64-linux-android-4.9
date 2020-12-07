@@ -1,0 +1,70 @@
+Source: android-platform-prebuilts-gcc-@TRIPLET@-@BASE_VERSION@
+Section: devel
+Priority: optional
+Maintainer: Eugenio Paolantonio (g7) <me@medesimo.eu>
+Build-Depends: debhelper (>= 13)
+Standards-Version: 4.5.0.3
+Vcs-Browser: https://github.com/hybris-mobian/android-platform-prebuilts-gcc-aarch64-linux-android-4.9
+Vcs-Git: https://github.com/hybris-mobian/android-platform-prebuilts-gcc-aarch64-linux-android-4.9.git
+
+Package: gcc-@BASE_VERSION@-@TRIPLET@
+Architecture: amd64
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         binutils-gcc@BASE_VERSION@-@TRIPLET@ (= ${binary:Version}),
+         cpp-@BASE_VERSION@-@TRIPLET@ (= ${binary:Version}),
+Description: GNU C compiler (cross compiler for arm64 architecture) - Android prebuilt
+ This is the GNU C compiler, a fairly portable optimizing compiler for C.
+ .
+ This package contains C cross-compiler for arm64 architecture, as taken
+ from the Android source tree.
+
+Package: libgcc-@BASE_VERSION@-dev-@TRIPLET@-cross
+Architecture: amd64
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         gcc-@BASE_VERSION@-@TRIPLET@ (= ${binary:Version}),
+Description: GCC support library (development files) - Android prebuilt
+ This package contains the headers and static library files necessary for
+ building C programs which use libgcc, libgomp, libquadmath, libssp or libitm.
+ .
+ This package contains the development files as taken from the Android source
+ tree (gcc @BASE_VERSION@).
+
+Package: g++-@BASE_VERSION@-@TRIPLET@
+Architecture: amd64
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         gcc-@BASE_VERSION@-@TRIPLET@ (= ${binary:Version}),
+Description: GNU C++ compiler (cross compiler for arm64 architecture) - Android prebuilt
+ This is the GNU C++ compiler, a fairly portable optimizing compiler for C++.
+ .
+ This package contains C++ cross-compiler for arm64 architecture, as taken
+ from the Android source tree.
+
+Package: cpp-@BASE_VERSION@-@TRIPLET@
+Architecture: amd64
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Description: GNU C preprocessor - Android prebuilt
+ A macro processor that is used automatically by the GNU C compiler to
+ transform programs before actual compilation.
+ .
+ This package has been separated from gcc for the benefit of those who
+ require the preprocessor but not the compiler.
+ .
+ This package contains preprocessor configured for arm64 architecture, as
+ taken from the Android source tree.
+
+Package: binutils-gcc@BASE_VERSION@-@TRIPLET@
+Architecture: amd64
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+Provides: android-platform-prebuilts-binutils-@TRIPLET@
+Description: GNU assembler, linker and binary utilities - Android prebuilt
+ The programs in this package are used to assemble, link and manipulate binary and
+ object files. They may be used in conjunction with a compiler and various
+ libraries to build programs. 
+ .
+ This package contains the prebuilt applications as taken from the Android source
+ tree (gcc @BASE_VERSION@).

@@ -1,0 +1,10 @@
+Name: @TRIPLET@-gcc
+Link: /usr/bin/@TRIPLET@-gcc
+Alternative: /usr/bin/@TRIPLET@-gcc-@BASE_VERSION@
+Dependents:
+  /usr/bin/@TRIPLET@-gcc-ar @TRIPLET@-gcc-ar /usr/bin/@TRIPLET@-gcc-ar-@BASE_VERSION@
+  /usr/bin/@TRIPLET@-gcc-nm @TRIPLET@-gcc-nm /usr/bin/@TRIPLET@-gcc-nm-@BASE_VERSION@
+  /usr/bin/@TRIPLET@-gcc-ranlib @TRIPLET@-gcc-ranlib /usr/bin/@TRIPLET@-gcc-ranlib-@BASE_VERSION@
+  /usr/bin/@TRIPLET@-gcov @TRIPLET@-gcov /usr/bin/@TRIPLET@-gcov-@BASE_VERSION@
+  /usr/bin/@TRIPLET@-gcov-tool @TRIPLET@-gcov-tool /usr/bin/@TRIPLET@-gcov-tool-@BASE_VERSION@
+Priority: 50
